@@ -1,0 +1,17 @@
+# Runtime data
+data/
+
+# Backups
+backups/
+
+# Logs
+logs/
+
+# Environment variables
+.env
+
+# macOS
+.DS_Store
+
+# Vim
+*.swp
