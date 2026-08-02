@@ -1,0 +1,10 @@
+title: Mini Astro Homelab
+
+background:
+  image: /images/wallpaper.jpg
+  blur: sm
+  saturate: 50
+  brightness: 50
+
+theme: dark
+color: slate
