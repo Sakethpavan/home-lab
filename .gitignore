@@ -1,11 +1,15 @@
 # Runtime data
 data/
+!data/.gitkeep
+!data/*/.gitkeep
 
 # Backups
 backups/
+!backups/.gitkeep
 
 # Logs
 logs/
+!logs/.gitkeep
 
 # Environment variables
 .env

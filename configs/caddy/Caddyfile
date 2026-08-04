@@ -1,0 +1,9 @@
+{
+    auto_https off
+}
+
+homepage.home.arpa {
+
+    reverse_proxy homepage:3000
+
+}

@@ -1,15 +1,25 @@
+x-defaults: &defaults
+  restart: unless-stopped
+
+  environment:
+    TZ: ${TZ}
+
+  networks:
+    - homelab
+
 services:
+
+  # Dashboard
   homepage:
+    <<: *defaults
+
     image: ${HOMEPAGE_IMAGE}
     container_name: homepage
-
-    restart: unless-stopped
 
     ports:
       - "3000:3000"
 
     environment:
-      TZ: ${TZ}
       HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS}
 
     volumes:
@@ -17,8 +27,55 @@ services:
       - ./configs/homepage/images:/app/public/images
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-    networks:
-      - homelab
+  # Messaging
+  caddy:
+    <<: *defaults
+
+    image: ${CADDY_IMAGE}
+    container_name: caddy
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    volumes:
+      - ./configs/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./data/caddy/data:/data
+      - ./data/caddy/config:/config
+
+  # File Management
+  filebrowser:
+    <<: *defaults
+
+    image: ${FILEBROWSER_IMAGE}
+    container_name: filebrowser
+
+    ports:
+      - "8080:80"
+
+    volumes:
+      - ./data/filebrowser:/srv
+      - ./configs/filebrowser:/config
+
+  # Monitoring
+  uptime-kuma:
+    <<: *defaults
+
+    image: ${UPTIME_KUMA_IMAGE}
+    container_name: uptime-kuma
+
+    ports:
+      - "3001:3001"
+
+    volumes:
+      - ./data/uptime-kuma:/app/data
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3001"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
 networks:
   homelab:
