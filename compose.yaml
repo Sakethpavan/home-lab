@@ -20,6 +20,7 @@ services:
       - "3000:3000"
 
     environment:
+      TZ: ${TZ}
       HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS}
 
     volumes:
@@ -56,7 +57,7 @@ services:
     volumes:
       - ./data/filebrowser:/srv
       - ./configs/filebrowser:/config
-
+      - ./data/filebrowser/database:/database
   # Monitoring
   uptime-kuma:
     <<: *defaults
