@@ -1,3 +1,7 @@
+###########################################################
+# Docker Compose
+###########################################################
+
 x-defaults: &defaults
   restart: unless-stopped
 
@@ -7,9 +11,16 @@ x-defaults: &defaults
   networks:
     - homelab
 
+###########################################################
+# Services
+###########################################################
+
 services:
 
+  #########################################################
   # Dashboard
+  #########################################################
+
   homepage:
     <<: *defaults
 
@@ -28,23 +39,17 @@ services:
       - ./configs/homepage/images:/app/public/images
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  # Messaging
-  caddy:
-    <<: *defaults
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
-    image: ${CADDY_IMAGE}
-    container_name: caddy
-
-    ports:
-      - "80:80"
-      - "443:443"
-
-    volumes:
-      - ./configs/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - ./data/caddy/data:/data
-      - ./data/caddy/config:/config
-
+  #########################################################
   # File Management
+  #########################################################
+
   filebrowser:
     <<: *defaults
 
@@ -55,10 +60,21 @@ services:
       - "8080:80"
 
     volumes:
-      - ./data/filebrowser:/srv
       - ./configs/filebrowser:/config
+      - ./data/filebrowser:/srv
       - ./data/filebrowser/database:/database
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  #########################################################
   # Monitoring
+  #########################################################
+
   uptime-kuma:
     <<: *defaults
 
@@ -77,6 +93,10 @@ services:
       timeout: 5s
       retries: 3
       start_period: 20s
+
+###########################################################
+# Networks
+###########################################################
 
 networks:
   homelab:
