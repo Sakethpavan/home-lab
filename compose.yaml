@@ -27,8 +27,8 @@ services:
     image: ${HOMEPAGE_IMAGE}
     container_name: homepage
 
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
 
     environment:
       TZ: ${TZ}
@@ -36,7 +36,6 @@ services:
 
     volumes:
       - ./configs/homepage:/app/config
-      - ./configs/homepage/images:/app/public/images
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
     healthcheck:
@@ -56,8 +55,8 @@ services:
     image: ${FILEBROWSER_IMAGE}
     container_name: filebrowser
 
-    ports:
-      - "8080:80"
+    expose:
+      - "80"
 
     volumes:
       - ./configs/filebrowser:/config
@@ -81,14 +80,39 @@ services:
     image: ${UPTIME_KUMA_IMAGE}
     container_name: uptime-kuma
 
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"
 
     volumes:
       - ./data/uptime-kuma:/app/data
 
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3001"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  #########################################################
+  # Reverse Proxy
+  #########################################################
+
+  caddy:
+    <<: *defaults
+
+    image: ${CADDY_IMAGE}
+    container_name: caddy
+
+    ports:
+      - "80:80"
+
+    volumes:
+      - ./configs/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./data/caddy/data:/data
+      - ./data/caddy/config:/config
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost"]
       interval: 30s
       timeout: 5s
       retries: 3

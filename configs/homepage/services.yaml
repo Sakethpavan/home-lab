@@ -1,14 +1,16 @@
 - Infrastructure:
     - Homepage:
-        href: http://192.168.29.230:3000
+        href: http://home.home.arpa
         icon: homepage.png
         description: Homelab Dashboard
+
     - File Browser:
-        href: http://192.168.29.230:8080
+        href: http://files.home.arpa
         icon: filebrowser.png
         description: File Management
+
 - Monitoring:
     - Uptime Kuma:
-        href: http://192.168.29.230:3001
+        href: http://status.home.arpa
         icon: uptime-kuma.png
         description: Service Monitoring

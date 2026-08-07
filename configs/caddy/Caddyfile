@@ -2,8 +2,14 @@
     auto_https off
 }
 
-homepage.home.arpa {
-
+http://home.home.arpa {
     reverse_proxy homepage:3000
+}
 
+http://files.home.arpa {
+    reverse_proxy filebrowser:80
+}
+
+http://status.home.arpa {
+    reverse_proxy uptime-kuma:3001
 }
